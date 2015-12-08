@@ -49,6 +49,7 @@ int main(void)
 	PaStreamParameters outputParameters;
 
 	std::cout << "Тестируем Portaudio: вывод синусойды" << std::endl;
+	
 	std::cout << "Введите частоту волны в герцах: ";
 	float freq = 0;
 	std::cin >> freq;
