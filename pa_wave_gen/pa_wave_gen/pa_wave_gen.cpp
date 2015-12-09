@@ -27,17 +27,16 @@ static int patestCallback(	const void*                     inputBuffer,
 							unsigned long                   framesPerBuffer,
 							const PaStreamCallbackTimeInfo* timeInfo,
 							PaStreamCallbackFlags           statusFlags,
-							void*                           userData,
-							
-							static unsigned int timeTmp = 0,
-							float sampleValTmp = 0,
-							const float pi = 3.14159265358
-							)
+							void*                           userData
+												)
 {
 	//myData *ptrData = new myData;
-
+	static unsigned int timeTmp = 0;
+	float sampleValTmp = 0;
+	const float pi = 3.14159265358;
 	myData *data = (myData*)userData;
 	float *out = (float*)outputBuffer;
+
 	
 	for (unsigned int i = 0; i < framesPerBuffer; i++)
 	{
