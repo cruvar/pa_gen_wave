@@ -8,6 +8,11 @@
 
 #define SAMPLE_RATE (44100)
 
+struct myData
+{
+	int frequency;
+};
+
 void HandleError(PaError &err)
 {
 	Pa_Terminate();
@@ -22,18 +27,21 @@ static int patestCallback(	const void*                     inputBuffer,
 							unsigned long                   framesPerBuffer,
 							const PaStreamCallbackTimeInfo* timeInfo,
 							PaStreamCallbackFlags           statusFlags,
-							void*                           userData
+							void*                           userData,
+							
+							static unsigned int timeTmp = 0,
+							float sampleValTmp = 0,
+							const float pi = 3.14159265358
 							)
 {
+	//myData *ptrData = new myData;
+
+	myData *data = (myData*)userData;
 	float *out = (float*)outputBuffer;
-	static unsigned int timeTmp = 0;
-	float sampleValTmp = 0;
-
-	const float pi = 3.14159265358;
-
+	
 	for (unsigned int i = 0; i < framesPerBuffer; i++)
 	{
-		sampleValTmp = (float)sin(2.0*pi*freq*(timeTmp++) / SAMPLE_RATE);
+		sampleValTmp = (float)sin(2.0*pi*data->frequency*(timeTmp++) / SAMPLE_RATE);
 		*out++ = sampleValTmp;
 		*out++ = sampleValTmp;
 	}
@@ -43,7 +51,7 @@ static int patestCallback(	const void*                     inputBuffer,
 int main(void)
 {
 	setlocale(LC_ALL, "rus");
-
+	myData data;
 	PaError err;
 	PaStream *stream;
 	PaStreamParameters outputParameters;
@@ -51,8 +59,7 @@ int main(void)
 	std::cout << "Тестируем Portaudio: вывод синусойды" << std::endl;
 	
 	std::cout << "Введите частоту волны в герцах: ";
-	float freq = 0;
-	std::cin >> freq;
+	std::cin >> data.frequency;
 	std::cout << "Нажмите ENTER для запуска программы\n";
 	getchar();
 
@@ -80,7 +87,7 @@ int main(void)
 						256,               /* Frames per buffer. */
 						paClipOff,         /* No out of range samples expected. */
 						patestCallback,
-						NULL);
+						&data);
 
 	if (err != paNoError)
 		HandleError(err);
